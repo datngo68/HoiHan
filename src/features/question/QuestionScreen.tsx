@@ -36,6 +36,10 @@ export default function QuestionScreen() {
 
     setDodgeCount((prev) => prev + 1)
 
+    // Play "fail" sound with increasing pitch!
+    const pitch = Math.min(2.0, 1.0 + dodgeCount * 0.08)
+    playSfx('fail', pitch)
+
     // Progressive scale: jumps further as user gets more frustrated
     const currentScale = Math.min(1 + dodgeCount * 0.15, 2.5)
     

@@ -17,10 +17,10 @@ export const useAudioStore = create<AudioState>((set) => ({
 }))
 
 const SFX_URLS: Record<string, string> = {
-  click: 'https://cdn.freesound.org/previews/707/707230_6142149-lq.mp3',
-  success: 'https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3',
-  fail: 'https://cdn.freesound.org/previews/362/362204_289524-lq.mp3',
-  pop: 'https://cdn.freesound.org/previews/421/421003_4921277-lq.mp3',
+  click: '/sounds/tap.mp3',
+  success: '/sounds/bell_ring.mp3',
+  fail: '/sounds/button_tiny.mp3',
+  pop: '/sounds/water_droplet.mp3',
 }
 
 const sfxCache: Map<string, Howl> = new Map()
@@ -32,17 +32,20 @@ function getSfx(name: string): Howl | null {
   if (!sfxCache.has(name)) {
     sfxCache.set(
       name,
-      new Howl({ src: [url], volume: 0.4, preload: true }),
+      new Howl({ src: [url], volume: name === 'success' ? 0.6 : 0.4, preload: true }),
     )
   }
   return sfxCache.get(name) || null
 }
 
-export function playSfx(name: string) {
+export function playSfx(name: string, playbackRate: number = 1.0) {
   const { sfxEnabled } = useAudioStore.getState()
   if (!sfxEnabled) return
   const sfx = getSfx(name)
-  sfx?.play()
+  if (sfx) {
+    sfx.rate(playbackRate)
+    sfx.play()
+  }
 }
 
 export function useBackgroundMusic() {
@@ -52,9 +55,10 @@ export function useBackgroundMusic() {
   const handleToggle = useCallback(() => {
     if (!musicRef.current) {
       musicRef.current = new Howl({
-        src: ['https://cdn.freesound.org/previews/612/612095_5674468-lq.mp3'],
+        src: ['/sounds/bgm.mp3'],
         loop: true,
-        volume: 0.25,
+        volume: 0.3,
+        html5: true, // Bypass CORS & XHR for huge BGM file
       })
     }
 
