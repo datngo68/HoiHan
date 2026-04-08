@@ -170,7 +170,7 @@ export default function CelebrationScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
         >
-          {t('celebration.message', { name: config.receiverName })}
+          {t('celebration.message', { receiver: config.receiverName, sender: config.senderName })}
           <Heart size={24} className="text-rose-500 inline-block flex-shrink-0" fill="currentColor" strokeWidth={0} />
         </motion.p>
 
@@ -180,7 +180,7 @@ export default function CelebrationScreen() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          {t('celebration.subtitle')}
+          {t('celebration.subtitle', { receiver: config.receiverName })}
         </motion.p>
 
         {/* Action buttons */}

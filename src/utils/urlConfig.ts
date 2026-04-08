@@ -8,33 +8,53 @@ interface ShareableConfig {
 }
 
 export function encodeConfigToURL(config: UserConfig): string {
-  const data: ShareableConfig = {
-    s: config.senderName,
-    r: config.receiverName,
-    l: config.language,
-    t: config.themeColor,
-  }
-  const json = JSON.stringify(data)
-  const encoded = btoa(unescape(encodeURIComponent(json)))
   const url = new URL(window.location.href)
-  url.search = ''
-  url.hash = encoded
+  url.hash = '' // Clear old hash method if exists
+  const params = new URLSearchParams()
+  params.set('s', config.senderName)
+  params.set('r', config.receiverName)
+  params.set('l', config.language)
+  params.set('t', config.themeColor)
+  url.search = params.toString()
   return url.toString()
 }
 
 export function decodeConfigFromURL(): Partial<UserConfig> | null {
   try {
+    const params = new URLSearchParams(window.location.search)
+    
+    // Support legacy base64 hash backward compatibility
     const hash = window.location.hash.slice(1)
-    if (!hash) return null
+    if (hash && hash.startsWith('config=')) {
+      const json = decodeURIComponent(escape(atob(hash.replace('config=', ''))))
+      const data = JSON.parse(json) as ShareableConfig
+      return {
+        senderName: data.s,
+        receiverName: data.r,
+        language: data.l as 'vi' | 'en',
+        themeColor: data.t
+      }
+    } else if (hash && !hash.includes('=')) {
+      const json = decodeURIComponent(escape(atob(hash)))
+      const data = JSON.parse(json) as ShareableConfig
+      return {
+        senderName: data.s,
+        receiverName: data.r,
+        language: data.l as 'vi' | 'en',
+        themeColor: data.t
+      }
+    }
 
-    const json = decodeURIComponent(escape(atob(hash)))
-    const data = JSON.parse(json) as ShareableConfig
+    if (!params.has('s') && !params.has('r')) return null
 
     const config: Partial<UserConfig> = {}
-    if (data.s) config.senderName = data.s
-    if (data.r) config.receiverName = data.r
-    if (data.l && (data.l === 'vi' || data.l === 'en')) config.language = data.l
-    if (data.t) config.themeColor = data.t
+    if (params.get('s')) config.senderName = params.get('s')!
+    if (params.get('r')) config.receiverName = params.get('r')!
+    
+    const lang = params.get('l')
+    if (lang === 'vi' || lang === 'en') config.language = lang
+    
+    if (params.get('t')) config.themeColor = params.get('t')!
 
     return config
   } catch {

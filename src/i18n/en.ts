@@ -1,6 +1,6 @@
 const en = {
   splash: {
-    greeting: 'Hello, {{name}}!',
+    greeting: 'Hello, {{receiver}}!',
     subtitle: 'There is a question for you...',
     start: 'Start',
     from: 'From {{sender}}, with all my love',
@@ -33,7 +33,7 @@ const en = {
   },
   celebration: {
     title: 'Yaaaay!',
-    message: 'I knew it! {{name}} loves me!',
+    message: 'I knew it! {{receiver}} loves me!',
     subtitle: 'Thank you for saying YES!',
     share: 'Share',
     playAgain: 'Play Again',

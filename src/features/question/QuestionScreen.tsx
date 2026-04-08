@@ -13,8 +13,13 @@ export default function QuestionScreen() {
   const noButtonRef = useRef<HTMLButtonElement>(null)
 
   const variantIndex = session.refusalCount % 12
-  const variants = t('question.variants', { returnObjects: true }) as string[]
-  const questionText = variants[variantIndex] || variants[0]
+  const questionText = t(`question.variants.${variantIndex}`, {
+    receiver: config.receiverName,
+    sender: config.senderName,
+  }) || t('question.variants.0', {
+    receiver: config.receiverName,
+    sender: config.senderName,
+  })
 
   const tooltips = t('question.noTooltips', { returnObjects: true }) as string[]
 
@@ -119,7 +124,7 @@ export default function QuestionScreen() {
           aria-label={t('question.yes')}
         >
           <Heart size={20} fill="currentColor" strokeWidth={0} />
-          {t('question.yes')}
+          {t('question.yes', { receiver: config.receiverName })}
         </motion.button>
 
         {/* NO button — dodges */}

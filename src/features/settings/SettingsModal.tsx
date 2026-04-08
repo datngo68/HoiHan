@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Settings, User, Heart, Globe, X, Check, ChevronDown } from 'lucide-react'
+import { Settings, User, Heart, Globe, X, Check, ChevronDown, Share2 } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
+import { encodeConfigToURL } from '../../utils/urlConfig'
 
 export default function SettingsModal() {
   const { t, i18n } = useTranslation()
@@ -13,8 +14,29 @@ export default function SettingsModal() {
     updateConfig(localConfig)
     i18n.changeLanguage(localConfig.language)
     localStorage.setItem('app-language', localConfig.language)
+    
+    // Update the browser URL without reloading
+    const newUrl = encodeConfigToURL(localConfig)
+    window.history.replaceState(null, '', newUrl)
+
     toggleSettings()
   }
+
+  const handleShare = useCallback(async () => {
+    // Ensure we are sharing the latest typed config
+    const shareUrl = encodeConfigToURL(localConfig)
+    const shareData = {
+      title: 'Em Có Yêu Anh Không?',
+      text: `Gửi trọn yêu thương từ ${localConfig.senderName}`,
+      url: shareUrl,
+    }
+    if (navigator.share) {
+      await navigator.share(shareData).catch(() => {})
+    } else {
+      await navigator.clipboard.writeText(shareUrl)
+      alert("Đã copy link chia sẻ!")
+    }
+  }, [localConfig])
 
   // Sync local when modal opens
   useEffect(() => {
@@ -154,26 +176,37 @@ export default function SettingsModal() {
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-3 mt-8">
-              <motion.button
-                id="btn-save-settings"
-                className="flex-1 py-3 text-base font-bold text-white rounded-xl cursor-pointer border-none flex items-center justify-center gap-2"
-                style={{
-                  background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
-                  boxShadow: '0 4px 16px rgba(225, 29, 72, 0.25)',
-                }}
-                whileHover={{ scale: 1.03, boxShadow: '0 6px 24px rgba(225, 29, 72, 0.35)' }}
-                whileTap={{ scale: 0.97 }}
-                onClick={handleSave}
-              >
-                <Check size={16} strokeWidth={3} />
-                {t('settings.save')}
-              </motion.button>
+            <div className="flex flex-col gap-3 mt-8">
+              <div className="flex gap-3">
+                <motion.button
+                  id="btn-save-settings"
+                  className="flex-[2] py-3 text-base font-bold text-white rounded-xl cursor-pointer border-none flex items-center justify-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
+                    boxShadow: '0 4px 16px rgba(225, 29, 72, 0.25)',
+                  }}
+                  whileHover={{ scale: 1.03, boxShadow: '0 6px 24px rgba(225, 29, 72, 0.35)' }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleSave}
+                >
+                  <Check size={16} strokeWidth={3} />
+                  {t('settings.save')}
+                </motion.button>
+                <motion.button
+                  id="btn-share-settings"
+                  className="flex-1 py-3 text-base font-bold text-rose-600 bg-rose-50 rounded-xl border-2 border-rose-200 cursor-pointer flex items-center justify-center gap-2"
+                  whileHover={{ scale: 1.03, backgroundColor: '#fecdd3' }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleShare}
+                >
+                  <Share2 size={16} strokeWidth={2.5} />
+                  Chia sẻ
+                </motion.button>
+              </div>
               <motion.button
                 id="btn-close-settings"
-                className="px-6 py-3 text-base font-medium text-rose-600 bg-rose-50 rounded-xl border-2 border-rose-200 cursor-pointer flex items-center justify-center gap-1.5"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                className="w-full py-3 text-base font-medium text-rose-500 bg-transparent rounded-xl border-2 border-transparent hover:bg-rose-50 cursor-pointer flex items-center justify-center transition-colors"
+                whileTap={{ scale: 0.98 }}
                 onClick={toggleSettings}
               >
                 {t('settings.close')}
