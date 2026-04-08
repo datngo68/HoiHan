@@ -7,7 +7,7 @@ import { playSfx } from '../../hooks/useAudio'
 
 export default function QuestionScreen() {
   const { t } = useTranslation()
-  const { session, setScreen, recordRefusal } = useAppStore()
+  const { session, config, setScreen, recordRefusal } = useAppStore()
   const [tooltipText, setTooltipText] = useState('')
   const [showTooltip, setShowTooltip] = useState(false)
   const [dodgeCount, setDodgeCount] = useState(0)
