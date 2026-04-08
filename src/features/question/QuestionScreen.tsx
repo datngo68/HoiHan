@@ -56,11 +56,16 @@ export default function QuestionScreen() {
     setTimeout(() => setShowTooltip(false), 2500)
   }, [x, y, tooltips, dodgeCount])
 
-  const handleNo = useCallback(() => {
-    playSfx('click')
-    recordRefusal()
-    setScreen('challenge')
-  }, [recordRefusal, setScreen])
+  const handleNoClick = useCallback((e: any) => {
+    if (e?.shiftKey || dodgeCount >= 15) {
+      if (dodgeCount >= 15) setDodgeCount(0)
+      playSfx('click')
+      recordRefusal()
+      setScreen('challenge')
+      return
+    }
+    dodgeNoButton(e)
+  }, [dodgeNoButton, dodgeCount, recordRefusal, setScreen])
 
   const handleYes = useCallback(() => {
     playSfx('pop')
@@ -152,8 +157,7 @@ export default function QuestionScreen() {
             }`}
             style={{ x, y, rotate }}
             onHoverStart={dodgeNoButton}
-            onTouchStart={dodgeNoButton}
-            onClick={handleNo}
+            onClick={handleNoClick}
             whileTap={{ scale: 0.9 }}
             aria-label={t('question.no')}
           >
