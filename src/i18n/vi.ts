@@ -10,7 +10,7 @@ const vi = {
     variants: [
       '{{receiver}} có yêu {{sender}} không?',
       'Thật sự mà, {{receiver}} có yêu {{sender}} không?',
-      'Cho {{sender}} cơ hội trả lời lại nè... {{receiver}} yêu {{sender}} chứ?',
+      'Cho {{receiver}} cơ hội trả lời lại nè... {{receiver}} yêu {{sender}} chứ?',
       'Sao vẫn bấm KHÔNG hả? {{receiver}} yêu {{sender}} mà đúng không?',
       '{{sender}} hỏi lại lần nữa nha... {{receiver}} yêu {{sender}} không?',
       'Nè nè, suy nghĩ kỹ đi... {{receiver}} yêu {{sender}} phải không?',
@@ -40,7 +40,7 @@ const vi = {
       'Tay nhanh hơn não à?',
       'Ủa bấm trượt hoài vậy =))',
       'Tính từ chối à? Nằm mơ đi!',
-      'Đố anh/em bắt được!',
+      'Đố {{receiver}} bắt được!',
       'Không có cửa đâu nghen!',
       'Nút Không bị lỗi rồi, bấm chữ CÓ đi',
       'Câu hỏi sai hay người trả lời sai?',
