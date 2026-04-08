@@ -25,8 +25,9 @@ export default function QuestionScreen() {
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const springX = useSpring(x, { stiffness: 400, damping: 20 })
-  const springY = useSpring(y, { stiffness: 400, damping: 20 })
+  // High stiffness and low damping for a very fast, mischievous bounce
+  const springX = useSpring(x, { stiffness: 1500, damping: 14 })
+  const springY = useSpring(y, { stiffness: 1500, damping: 14 })
   const rotate = useTransform(springX, [-100, 100], [-15, 15])
 
   const dodgeNoButton = useCallback((e?: any) => {
