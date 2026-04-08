@@ -145,7 +145,7 @@ export default function ChallengeScreen() {
       <div className="w-full max-w-md mb-6">
         <div className="flex justify-between items-center">
           <motion.h2
-            className="text-2xl font-bold text-slate-800"
+            className="text-2xl font-bold text-rose-800"
             style={{ fontFamily: 'var(--font-display)' }}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -154,7 +154,7 @@ export default function ChallengeScreen() {
           </motion.h2>
 
           <motion.button
-            className="px-4 py-2 text-sm font-semibold text-slate-500 bg-slate-100/50 hover:bg-slate-100 hover:text-slate-700 rounded-xl cursor-pointer border border-slate-200/50 flex items-center gap-1.5 transition-colors backdrop-blur-sm"
+            className="px-4 py-1.5 text-sm font-medium text-rose-400 bg-rose-50 rounded-lg cursor-pointer border border-rose-200 flex items-center gap-1.5"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleSkip}
@@ -165,7 +165,7 @@ export default function ChallengeScreen() {
         </div>
 
         {/* Challenge info */}
-        <p className="text-slate-500 mt-1 text-sm font-medium">
+        <p className="text-rose-600 mt-1 text-sm">
           {isEn ? currentChallenge.descriptionKey : currentChallenge.descriptionKey}
         </p>
       </div>
@@ -175,7 +175,7 @@ export default function ChallengeScreen() {
         {phase === 'playing' && (
           <motion.div
             key="playing"
-            className="w-full max-w-md bg-white/60 backdrop-blur-xl border border-white/50 shadow-2xl shadow-slate-900/5 rounded-3xl p-6"
+            className="w-full max-w-md"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -193,42 +193,28 @@ export default function ChallengeScreen() {
           >
             <motion.div
               className="text-7xl mb-4 flex justify-center text-rose-500"
-              initial={{ scale: 0, rotate: -45 }}
-              animate={{ scale: [1.2, 1], rotate: [15, 0] }}
-              transition={{ duration: 0.7, type: 'spring', bounce: 0.6 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 0.6, type: 'spring' }}
             >
               {lastSuccess ? <PartyPopper size={72} strokeWidth={1.5} /> : <RefreshCcw size={72} strokeWidth={1.5} />}
             </motion.div>
 
-            <motion.h3
-              className="text-2xl font-bold text-slate-800 mb-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
+            <h3 className="text-2xl font-bold text-rose-800 mb-2">
               {lastSuccess ? t('challenge.successTitle', 'Khá lắm!') : t('challenge.failTitle', 'Chưa được rồi!')}
-            </motion.h3>
+            </h3>
 
-            <motion.p
-              className="text-slate-600 mb-8 font-medium"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <p className="text-rose-600 mb-8">
               {lastSuccess
                 ? t('challenge.successMessage', 'Bạn đã mở khóa cơ hội trả lời lại câu hỏi!')
                 : t('challenge.failMessage', 'Không sao, hãy quay lại và thử lại nhé!')}
-            </motion.p>
+            </p>
 
             <motion.button
-              className="px-8 py-4 text-lg font-bold text-white rounded-2xl cursor-pointer border-none flex items-center justify-center gap-2 mx-auto"
+              className="px-8 py-4 text-lg font-bold text-white rounded-2xl cursor-pointer border-none flex items-center justify-center gap-2"
               style={{
                 background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
                 boxShadow: '0 4px 20px rgba(225, 29, 72, 0.3)',
               }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, type: 'spring' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleContinue}
