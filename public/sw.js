@@ -23,7 +23,17 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
-  // Network-first for HTML, cache-first for assets
+  // Only cache GET requests (Cache API does not support POST, PUT, etc.)
+  if (event.request.method !== 'GET') {
+    return
+  }
+
+  // Ignore requests from chrome extensions or other weird schemes
+  if (!event.request.url.startsWith('http')) {
+    return
+  }
+
+  // Network-first for HTML
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -32,6 +42,7 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Cache-first for assets
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached
