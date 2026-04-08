@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Settings, User, Heart, Globe, X, Check } from 'lucide-react'
+import { Settings, User, Heart, Globe, X, Check, ChevronDown } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
 export default function SettingsModal() {
@@ -17,9 +17,11 @@ export default function SettingsModal() {
   }
 
   // Sync local when modal opens
-  if (settingsOpen && localConfig !== config) {
-    setLocalConfig(config)
-  }
+  useEffect(() => {
+    if (settingsOpen) {
+      setLocalConfig(config)
+    }
+  }, [settingsOpen, config])
 
   return (
     <AnimatePresence>
@@ -91,8 +93,9 @@ export default function SettingsModal() {
                   onChange={(e) =>
                     setLocalConfig((c) => ({ ...c, receiverName: e.target.value }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:outline-none transition-colors"
-                  style={{ background: 'rgba(255,241,242,0.5)' }}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:outline-none transition-all placeholder:text-rose-300"
+                  style={{ background: 'rgba(255,241,242,0.6)' }}
+                  placeholder="Nhập tên..."
                 />
               </div>
 
@@ -112,8 +115,9 @@ export default function SettingsModal() {
                   onChange={(e) =>
                     setLocalConfig((c) => ({ ...c, senderName: e.target.value }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:outline-none transition-colors"
-                  style={{ background: 'rgba(255,241,242,0.5)' }}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:outline-none transition-all placeholder:text-rose-300"
+                  style={{ background: 'rgba(255,241,242,0.6)' }}
+                  placeholder="Nhập tên..."
                 />
               </div>
 
@@ -126,21 +130,26 @@ export default function SettingsModal() {
                   <Globe size={14} className="text-rose-400" />
                   {t('settings.language')}
                 </label>
-                <select
-                  id="select-language"
-                  value={localConfig.language}
-                  onChange={(e) =>
-                    setLocalConfig((c) => ({
-                      ...c,
-                      language: e.target.value as 'vi' | 'en',
-                    }))
-                  }
-                  className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:outline-none transition-colors bg-white"
-                  style={{ background: 'rgba(255,241,242,0.5)' }}
-                >
-                  <option value="vi">🇻🇳 Tiếng Việt</option>
-                  <option value="en">🇬🇧 English</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="select-language"
+                    value={localConfig.language}
+                    onChange={(e) =>
+                      setLocalConfig((c) => ({
+                        ...c,
+                        language: e.target.value as 'vi' | 'en',
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-xl border-2 border-rose-200 text-rose-900 font-medium focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:outline-none transition-all appearance-none cursor-pointer"
+                    style={{ background: 'rgba(255,241,242,0.6)' }}
+                  >
+                    <option value="vi">🇻🇳 Tiếng Việt</option>
+                    <option value="en">🇺🇸 English</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                    <ChevronDown size={18} className="text-rose-400" />
+                  </div>
+                </div>
               </div>
             </div>
 
