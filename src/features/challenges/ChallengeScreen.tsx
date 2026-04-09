@@ -15,7 +15,7 @@ type ChallengePhase = 'select' | 'hub' | 'playing' | 'result'
 
 export default function ChallengeScreen() {
   const { i18n } = useTranslation()
-  const { setScreen, recordChallenge } = useAppStore()
+  const { setScreen, recordChallenge, config } = useAppStore()
   const isEn = i18n.language === 'en'
 
   const engine = useMemo(() => createChallengeEngine(), [])
@@ -119,9 +119,11 @@ export default function ChallengeScreen() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
           >
-            <ChallengeDispatcher 
-              challenge={currentChallenge} 
-              onComplete={handleComplete} 
+            <ChallengeDispatcher
+              challenge={currentChallenge}
+              onComplete={handleComplete}
+              senderName={config.senderName}
+              receiverName={config.receiverName}
             />
           </motion.div>
         )}

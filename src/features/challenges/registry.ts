@@ -3,6 +3,8 @@ import { quizChallenges } from './data/quizData'
 import { interactiveChallenges } from './data/interactiveData'
 import { quizChallengesExtra } from './data/quizDataExtra'
 import { interactiveChallengesExtra } from './data/interactiveDataExtra'
+import { wowChallenges } from './data/wowChallengesData'
+import { tier1Tier2Challenges } from './data/tier1Tier2Data'
 
 /**
  * Challenge Registry — single source of all challenge definitions.
@@ -43,3 +45,5 @@ challengeRegistry.registerMany(quizChallenges)
 challengeRegistry.registerMany(interactiveChallenges)
 challengeRegistry.registerMany(quizChallengesExtra)
 challengeRegistry.registerMany(interactiveChallengesExtra)
+challengeRegistry.registerMany(wowChallenges)
+challengeRegistry.registerMany(tier1Tier2Challenges)

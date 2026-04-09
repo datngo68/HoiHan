@@ -14,7 +14,7 @@ export interface UserConfig {
   autoPlayMusic: boolean
 }
 
-export type ChallengeCategory = 'quiz' | 'click' | 'text' | 'minigame' | 'truthdare'
+export type ChallengeCategory = 'quiz' | 'click' | 'text' | 'minigame' | 'truthdare' | 'rhythm' | 'draw'
 export type ChallengeDifficulty = 'easy' | 'medium' | 'hard'
 
 export interface ChallengeDefinition {
