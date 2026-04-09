@@ -9,26 +9,31 @@ import { playSfx } from '../../hooks/useAudio'
 
 export default function CelebrationScreen() {
   const { t } = useTranslation()
-  const { config, resetSession } = useAppStore()
+  const { config, journeyState, resetSession } = useAppStore()
+  const isReward = journeyState.isReward
 
   const fireConfetti = useCallback(() => {
-    const duration = 4000
+    const duration = isReward ? 6000 : 4000
     const end = Date.now() + duration
 
     const frame = () => {
       confetti({
-        particleCount: 3,
+        particleCount: isReward ? 5 : 3,
         angle: 60,
         spread: 55,
         origin: { x: 0, y: 0.7 },
-        colors: ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3'],
+        colors: isReward
+          ? ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#facc15', '#fef08a']
+          : ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3'],
       })
       confetti({
-        particleCount: 3,
+        particleCount: isReward ? 5 : 3,
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.7 },
-        colors: ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3'],
+        colors: isReward
+          ? ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#facc15', '#fef08a']
+          : ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3'],
       })
 
       if (Date.now() < end) {
@@ -37,14 +42,14 @@ export default function CelebrationScreen() {
     }
 
     confetti({
-      particleCount: 100,
-      spread: 100,
+      particleCount: isReward ? 180 : 100,
+      spread: isReward ? 130 : 100,
       origin: { x: 0.5, y: 0.5 },
       colors: ['#e11d48', '#f43f5e', '#fb7185', '#fecdd3', '#facc15', '#fef08a'],
     })
 
     requestAnimationFrame(frame)
-  }, [])
+  }, [isReward])
 
   useEffect(() => {
     fireConfetti()
@@ -147,12 +152,27 @@ export default function CelebrationScreen() {
           </motion.div>
         </motion.div>
 
-        {/* Title — gradient text, no emoji */}
+        {/* Reward badge */}
+        {isReward && (
+          <motion.div
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full mb-5"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, type: 'spring' }}
+          >
+            <Sparkles size={12} className="text-amber-500" />
+            {t('heartJourney.rewardBadge')}
+          </motion.div>
+        )}
+
+        {/* Title — gradient text */}
         <motion.h1
           className="text-5xl md:text-6xl font-bold mb-4"
           style={{
             fontFamily: 'var(--font-display)',
-            background: 'linear-gradient(135deg, #be123c, #e11d48, #f43f5e)',
+            background: isReward
+              ? 'linear-gradient(135deg, #b45309, #d97706, #e11d48)'
+              : 'linear-gradient(135deg, #be123c, #e11d48, #f43f5e)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}
@@ -160,7 +180,7 @@ export default function CelebrationScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          {t('celebration.title')}
+          {isReward ? t('heartJourney.rewardTitle') : t('celebration.title')}
         </motion.h1>
 
         {/* Message */}
@@ -170,7 +190,9 @@ export default function CelebrationScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
         >
-          {t('celebration.message', { receiver: config.receiverName, sender: config.senderName })}
+          {isReward
+            ? t('heartJourney.rewardSubtitle', { receiver: config.receiverName, sender: config.senderName })
+            : t('celebration.message', { receiver: config.receiverName, sender: config.senderName })}
           <Heart size={24} className="text-rose-500 inline-block flex-shrink-0" fill="currentColor" strokeWidth={0} />
         </motion.p>
 

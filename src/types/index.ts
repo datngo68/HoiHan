@@ -1,4 +1,10 @@
-export type AppScreen = 'splash' | 'question' | 'challenge' | 'celebration'
+export type AppScreen = 'splash' | 'question' | 'challenge' | 'celebration' | 'heart-journey'
+
+export interface JourneyState {
+  currentStep: number
+  completedSteps: number[]
+  isReward: boolean
+}
 
 export interface UserConfig {
   senderName: string

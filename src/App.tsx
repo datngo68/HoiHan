@@ -7,6 +7,7 @@ import SplashScreen from './features/splash/SplashScreen'
 import QuestionScreen from './features/question/QuestionScreen'
 import ChallengeScreen from './features/challenges/ChallengeScreen'
 import CelebrationScreen from './features/celebration/CelebrationScreen'
+import HeartJourneyScreen from './features/heart-journey/HeartJourneyScreen'
 import SettingsModal from './features/settings/SettingsModal'
 
 function SettingsButton() {
@@ -106,6 +107,7 @@ export default function App() {
         {screen === 'splash' && <SplashScreen key="splash" />}
         {screen === 'question' && <QuestionScreen key="question" />}
         {screen === 'challenge' && <ChallengeScreen key="challenge" />}
+        {screen === 'heart-journey' && <HeartJourneyScreen key="heart-journey" />}
         {screen === 'celebration' && <CelebrationScreen key="celebration" />}
       </AnimatePresence>
     </>

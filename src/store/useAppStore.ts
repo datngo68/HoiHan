@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { AppScreen, UserConfig, SessionState } from '../types'
+import type { AppScreen, UserConfig, SessionState, JourneyState } from '../types'
 
 interface AppStore {
   screen: AppScreen
@@ -13,6 +13,10 @@ interface AppStore {
   recordRefusal: () => void
   recordChallenge: (challengeId: string) => void
   resetSession: () => void
+
+  journeyState: JourneyState
+  recordJourneyStep: (step: number) => void
+  resetJourney: () => void
 
   settingsOpen: boolean
   toggleSettings: () => void
@@ -30,6 +34,12 @@ const defaultSession: SessionState = {
   refusalCount: 0,
   completedChallengeIds: [],
   currentChallengeIndex: 0,
+}
+
+const defaultJourney: JourneyState = {
+  currentStep: 0,
+  completedSteps: [],
+  isReward: false,
 }
 
 export const useAppStore = create<AppStore>()(
@@ -62,6 +72,17 @@ export const useAppStore = create<AppStore>()(
           },
         })),
       resetSession: () => set({ session: defaultSession, screen: 'splash' }),
+
+      journeyState: defaultJourney,
+      recordJourneyStep: (step) =>
+        set((state) => ({
+          journeyState: {
+            ...state.journeyState,
+            completedSteps: [...state.journeyState.completedSteps, step],
+            currentStep: step + 1,
+          },
+        })),
+      resetJourney: () => set({ journeyState: { ...defaultJourney, isReward: true } }),
 
       settingsOpen: false,
       toggleSettings: () =>

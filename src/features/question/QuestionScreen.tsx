@@ -7,7 +7,7 @@ import { playSfx } from '../../hooks/useAudio'
 
 export default function QuestionScreen() {
   const { t } = useTranslation()
-  const { session, config, setScreen, recordRefusal } = useAppStore()
+  const { session, config, setScreen, recordRefusal, resetJourney } = useAppStore()
   const [tooltipText, setTooltipText] = useState('')
   const [dodgeCount, setDodgeCount] = useState(0)
   const noButtonRef = useRef<HTMLButtonElement>(null)
@@ -72,8 +72,9 @@ export default function QuestionScreen() {
 
   const handleYes = useCallback(() => {
     playSfx('pop')
-    setScreen('celebration')
-  }, [setScreen])
+    resetJourney()
+    setScreen('heart-journey')
+  }, [setScreen, resetJourney])
 
   return (
     <motion.div

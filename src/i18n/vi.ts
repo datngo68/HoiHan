@@ -79,6 +79,26 @@ const vi = {
     save: 'Lưu',
     close: 'Đóng',
   },
+  heartJourney: {
+    title: 'Hành Trình Tình Yêu',
+    subtitle: 'Hoàn thành {{total}} thử thách để mở khoá khoảnh khắc đặc biệt!',
+    stepBadge: 'Bước {{step}}/{{total}}',
+    skip: 'Bỏ qua hành trình',
+    step1Title: 'Chứng minh trái tim bạn đang đập!',
+    step1Desc: 'Bấm tim {{target}} lần trong {{seconds}}s',
+    step2Title: 'Câu hỏi tình yêu ngọt ngào',
+    step2Desc: 'Chọn đáp án đúng nhé!',
+    step3Title: 'Lời hứa bí mật',
+    step3Desc: 'Gõ lại câu này để xác nhận tình yêu',
+    unlockStep1: 'Trái tim đã được xác nhận!',
+    unlockStep2: 'Câu trả lời hoàn hảo!',
+    unlockStep3: 'Lời hứa đã được ghi lại!',
+    allUnlocked: 'Tình yêu đã được chứng minh!',
+    continueBtn: 'Tiếp tục',
+    rewardTitle: 'Tình Yêu Đã Được Chứng Minh!',
+    rewardSubtitle: '{{receiver}} thực sự yêu {{sender}}!',
+    rewardBadge: 'Heart Journey Hoàn Thành',
+  },
 } as const
 
 export default vi
