@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AppScreen, UserConfig, SessionState, JourneyState } from '../types'
+import { generateRandomJourneySteps } from '../features/heart-journey/data/journeyData'
 
 interface AppStore {
   screen: AppScreen
@@ -17,6 +18,7 @@ interface AppStore {
   journeyState: JourneyState
   recordJourneyStep: (step: number) => void
   resetJourney: () => void
+  generateJourneySteps: () => void
 
   settingsOpen: boolean
   toggleSettings: () => void
@@ -38,6 +40,7 @@ const defaultSession: SessionState = {
 }
 
 const defaultJourney: JourneyState = {
+  steps: [],
   currentStep: 0,
   completedSteps: [],
   isReward: false,
@@ -84,6 +87,13 @@ export const useAppStore = create<AppStore>()(
           },
         })),
       resetJourney: () => set({ journeyState: { ...defaultJourney, isReward: true } }),
+      generateJourneySteps: () =>
+        set((state) => ({
+          journeyState: {
+            ...state.journeyState,
+            steps: generateRandomJourneySteps(),
+          },
+        })),
 
       settingsOpen: false,
       toggleSettings: () =>

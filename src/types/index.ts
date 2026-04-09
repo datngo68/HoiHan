@@ -1,6 +1,15 @@
 export type AppScreen = 'splash' | 'question' | 'challenge' | 'celebration' | 'heart-journey'
 
+export interface JourneyStepDef {
+  id: string
+  stepNumber: 1 | 2 | 3
+  titleKey: string
+  descriptionKey: string
+  unlockMessageKey: string
+}
+
 export interface JourneyState {
+  steps: JourneyStepDef[]
   currentStep: number
   completedSteps: number[]
   isReward: boolean

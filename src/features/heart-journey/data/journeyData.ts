@@ -1,38 +1,33 @@
 import { challengeRegistry } from '../../challenges/registry'
+import type { JourneyStepDef } from '../../../types'
 
-export interface JourneyStepDef {
-  id: string
-  stepNumber: 1 | 2 | 3
-  titleKey: string
-  descriptionKey: string
-  unlockMessageKey: string
-}
+/** 
+ * Lấy ra 3 trò chơi NGẪU NHIÊN từ toàn bộ 20+ Challenge 
+ * Lọc bỏ những game khó (hard) để phần thưởng bớt căng thẳng.
+ */
+export function generateRandomJourneySteps(): JourneyStepDef[] {
+  // 1. Lọc tất cả các game có category minigame, click, text, v.v., ngoại trừ difficulty 'hard'
+  const availableChallenges = Array.from(challengeRegistry.getAll())
+    .filter(c => c.difficulty !== 'hard' && c.category !== 'quiz') // Có thể loại quiz nếu muốn, hoặc cứ giữ hết.
 
-// 4 kịch bản cảm xúc khác nhau
-const themedJourneys = [
-  // Combo 1: Lãng mạn (Romantic)
-  ['bouquet-builder-1', 'mad-libs-1', 'draw-heart-1'],
-  // Combo 2: Thử thách (Action/Reflex)
-  ['catch-hearts-1', 'rhythm-tap-1', 'heart-shooter-1'],
-  // Combo 3: Kỷ niệm (Memory & Truth)
-  ['quiz-1', 'truth-dare-1', 'memory-lane-1'],
-  // Combo 4: Vui nhộn (Fun)
-  ['tap-counter-1', 'memory-cards-1', 'click-hearts-1'],
-]
+  // 2. Thuật toán Fisher-Yates Shuffle mảng
+  const shuffled = [...availableChallenges]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
 
-export function getRandomJourney(): JourneyStepDef[] {
-  // Chọn ngẫu nhiên 1 kịch bản
-  const randomCombo = themedJourneys[Math.floor(Math.random() * themedJourneys.length)]
-  
-  return randomCombo.map((challengeId, idx) => {
-    // Lấy tên/mô tả gốc của game làm thông tin step
-    const challenge = challengeRegistry.get(challengeId)
+  // 3. Lấy đúng 3 challenge đầu tiên
+  const selectedChallenges = shuffled.slice(0, 3)
+
+  // 4. Map thành JourneyStepDef
+  return selectedChallenges.map((challenge, idx) => {
     return {
-      id: challengeId,
+      id: challenge.id,
       stepNumber: (idx + 1) as 1 | 2 | 3,
-      titleKey: challenge?.titleKey || 'heartJourney.step1Title',
-      descriptionKey: challenge?.descriptionKey || 'heartJourney.step1Desc',
-      unlockMessageKey: `heartJourney.unlockStep${idx + 1}`, // Giữ nguyên thông báo mở khóa
+      titleKey: challenge.titleKey,
+      descriptionKey: challenge.descriptionKey,
+      unlockMessageKey: `heartJourney.unlockStep${idx + 1}`,
     }
   })
 }

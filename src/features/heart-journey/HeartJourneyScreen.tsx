@@ -1,9 +1,8 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Heart, SkipForward } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
-import { getRandomJourney } from './data/journeyData'
 import JourneyProgress from './JourneyProgress'
 import JourneyStep from './JourneyStep'
 import StepResult from './StepResult'
@@ -11,9 +10,9 @@ import { playSfx } from '../../hooks/useAudio'
 
 export default function HeartJourneyScreen() {
   const { t } = useTranslation()
-  const { config, setScreen, recordJourneyStep } = useAppStore()
+  const { config, setScreen, recordJourneyStep, journeyState } = useAppStore()
 
-  const journeySteps = useMemo(() => getRandomJourney(), [])
+  const journeySteps = journeyState.steps || []
   const TOTAL_STEPS = journeySteps.length
 
   const [currentStepIdx, setCurrentStepIdx] = useState(0)
@@ -46,6 +45,10 @@ export default function HeartJourneyScreen() {
   const handleSkip = useCallback(() => {
     setScreen('celebration')
   }, [setScreen])
+
+  if (TOTAL_STEPS === 0 || !currentStep) {
+    return null
+  }
 
   return (
     <motion.div

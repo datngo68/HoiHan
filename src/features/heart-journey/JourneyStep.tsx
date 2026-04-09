@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { challengeRegistry } from '../challenges/registry'
 import ChallengeDispatcher from '../challenges/components/ChallengeDispatcher'
-import type { JourneyStepDef } from './data/journeyData'
+import type { JourneyStepDef } from '../../types'
 
 interface Props {
   stepDef: JourneyStepDef
