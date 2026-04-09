@@ -33,18 +33,18 @@ const defaultConfig: UserConfig = {
   enableHeartJourney: true,
 }
 
-const defaultSession: SessionState = {
+const createDefaultSession = (): SessionState => ({
   refusalCount: 0,
   completedChallengeIds: [],
   currentChallengeIndex: 0,
-}
+})
 
-const defaultJourney: JourneyState = {
+const createDefaultJourney = (): JourneyState => ({
   steps: [],
   currentStep: 0,
   completedSteps: [],
   isReward: false,
-}
+})
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -56,7 +56,7 @@ export const useAppStore = create<AppStore>()(
       updateConfig: (partial) =>
         set((state) => ({ config: { ...state.config, ...partial } })),
 
-      session: defaultSession,
+      session: createDefaultSession(),
       recordRefusal: () =>
         set((state) => ({
           session: {
@@ -75,9 +75,14 @@ export const useAppStore = create<AppStore>()(
             currentChallengeIndex: state.session.currentChallengeIndex + 1,
           },
         })),
-      resetSession: () => set({ session: defaultSession, screen: 'splash' }),
+      resetSession: () =>
+        set({
+          session: createDefaultSession(),
+          journeyState: createDefaultJourney(),
+          screen: 'splash',
+        }),
 
-      journeyState: defaultJourney,
+      journeyState: createDefaultJourney(),
       recordJourneyStep: (step) =>
         set((state) => ({
           journeyState: {
@@ -86,12 +91,14 @@ export const useAppStore = create<AppStore>()(
             currentStep: step + 1,
           },
         })),
-      resetJourney: () => set({ journeyState: { ...defaultJourney, isReward: true } }),
+      resetJourney: () => set({ journeyState: { ...createDefaultJourney(), isReward: true } }),
       generateJourneySteps: () =>
         set((state) => ({
           journeyState: {
             ...state.journeyState,
-            steps: generateRandomJourneySteps(),
+            steps: generateRandomJourneySteps(state.session.completedChallengeIds),
+            currentStep: 0,
+            completedSteps: [],
           },
         })),
 

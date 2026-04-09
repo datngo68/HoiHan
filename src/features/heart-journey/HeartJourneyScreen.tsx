@@ -7,48 +7,59 @@ import JourneyProgress from './JourneyProgress'
 import JourneyStep from './JourneyStep'
 import StepResult from './StepResult'
 import { playSfx } from '../../hooks/useAudio'
+import type { JourneyStepDef } from '../../types'
+
+type StepResultState = Pick<JourneyStepDef, 'stepNumber' | 'unlockMessageKey'>
 
 export default function HeartJourneyScreen() {
   const { t } = useTranslation()
   const { config, setScreen, recordJourneyStep, journeyState } = useAppStore()
 
   const journeySteps = journeyState.steps || []
-  const TOTAL_STEPS = journeySteps.length
+  const totalSteps = journeySteps.length
+  const currentStepIdx = journeyState.currentStep
+  const completedSteps = journeyState.completedSteps
 
-  const [currentStepIdx, setCurrentStepIdx] = useState(0)
-  const [showResult, setShowResult] = useState(false)
-  const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const currentStep =
+    currentStepIdx >= 0 && currentStepIdx < totalSteps
+      ? journeySteps[currentStepIdx]
+      : undefined
 
-  const currentStep = journeySteps[currentStepIdx]
+  const [resultState, setResultState] = useState<StepResultState | null>(null)
 
   const handleStepComplete = useCallback(
-    (_success: boolean) => {
-      // Treat fail as success in reward context — love journey is forgiving
+    () => {
+      if (!currentStep || resultState) {
+        return
+      }
+
       playSfx('success')
+      setResultState({
+        stepNumber: currentStep.stepNumber,
+        unlockMessageKey: currentStep.unlockMessageKey,
+      })
       recordJourneyStep(currentStepIdx)
-      setCompletedSteps((prev) => [...prev, currentStepIdx])
-      setShowResult(true)
     },
-    [currentStepIdx, recordJourneyStep],
+    [currentStep, currentStepIdx, recordJourneyStep, resultState],
   )
 
   const handleResultContinue = useCallback(() => {
-    setShowResult(false)
-    const nextIdx = currentStepIdx + 1
-    if (nextIdx >= TOTAL_STEPS) {
+    setResultState(null)
+
+    if (journeyState.currentStep >= totalSteps) {
       setScreen('celebration')
-    } else {
-      setCurrentStepIdx(nextIdx)
     }
-  }, [currentStepIdx, setScreen])
+  }, [journeyState.currentStep, setScreen, totalSteps])
 
   const handleSkip = useCallback(() => {
     setScreen('celebration')
   }, [setScreen])
 
-  if (TOTAL_STEPS === 0 || !currentStep) {
+  if (totalSteps === 0) {
     return null
   }
+
+  const hasActiveStep = !!currentStep
 
   return (
     <motion.div
@@ -100,7 +111,7 @@ export default function HeartJourneyScreen() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
         >
-          {t('heartJourney.subtitle', { total: TOTAL_STEPS })}
+          {t('heartJourney.subtitle', { total: totalSteps })}
         </motion.p>
 
         {/* Progress tracker */}
@@ -109,42 +120,46 @@ export default function HeartJourneyScreen() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25 }}
         >
-          <JourneyProgress totalSteps={TOTAL_STEPS} currentStep={currentStepIdx} completedSteps={completedSteps} />
+          <JourneyProgress totalSteps={totalSteps} currentStep={currentStepIdx} completedSteps={completedSteps} />
         </motion.div>
       </div>
 
       {/* Step title */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`title-${currentStepIdx}`}
-          className="w-full max-w-sm mb-5 text-center"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-        >
-          <div className="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1">
-            {t('heartJourney.stepBadge', { step: currentStepIdx + 1, total: TOTAL_STEPS })}
-          </div>
-          <h2 className="text-xl font-bold text-slate-800">
-            {t(currentStep.titleKey)}
-          </h2>
-          <p className="text-sm text-slate-500 mt-1">
-            {t(currentStep.descriptionKey, { target: 10, seconds: 30 })}
-          </p>
-        </motion.div>
-      </AnimatePresence>
+      {hasActiveStep && currentStep && (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`title-${currentStepIdx}`}
+            className="w-full max-w-sm mb-5 text-center"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+          >
+            <div className="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1">
+              {t('heartJourney.stepBadge', { step: currentStepIdx + 1, total: totalSteps })}
+            </div>
+            <h2 className="text-xl font-bold text-slate-800">
+              {t(currentStep.titleKey)}
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              {t(currentStep.descriptionKey, { target: 10, seconds: 30 })}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {/* Challenge game area */}
       <div className="w-full max-w-sm flex-1 flex items-start">
-        <AnimatePresence mode="wait">
-          <JourneyStep
-            key={currentStep.id}
-            stepDef={currentStep}
-            senderName={config.senderName}
-            receiverName={config.receiverName}
-            onComplete={handleStepComplete}
-          />
-        </AnimatePresence>
+        {hasActiveStep && currentStep && (
+          <AnimatePresence mode="wait">
+            <JourneyStep
+              key={currentStep.id}
+              stepDef={currentStep}
+              senderName={config.senderName}
+              receiverName={config.receiverName}
+              onComplete={handleStepComplete}
+            />
+          </AnimatePresence>
+        )}
       </div>
 
       {/* Skip button */}
@@ -161,10 +176,10 @@ export default function HeartJourneyScreen() {
       </motion.button>
 
       {/* Step Result overlay */}
-      {showResult && currentStep && (
+      {resultState && (
         <StepResult
-          stepNumber={currentStep.stepNumber}
-          unlockMessageKey={currentStep.unlockMessageKey}
+          stepNumber={resultState.stepNumber}
+          unlockMessageKey={resultState.unlockMessageKey}
           onContinue={handleResultContinue}
         />
       )}
