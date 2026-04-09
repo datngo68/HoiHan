@@ -12,6 +12,7 @@ export interface UserConfig {
   themeColor: string
   language: 'vi' | 'en'
   autoPlayMusic: boolean
+  enableHeartJourney: boolean
 }
 
 export type ChallengeCategory = 'quiz' | 'click' | 'text' | 'minigame' | 'truthdare' | 'rhythm' | 'draw'

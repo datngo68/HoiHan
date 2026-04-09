@@ -75,6 +75,7 @@ const en = {
     receiverName: 'Receiver name',
     senderName: 'Sender name',
     language: 'Language',
+    enableHeartJourney: 'Play games after YES',
     save: 'Save',
     close: 'Close',
   },

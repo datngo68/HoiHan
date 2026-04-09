@@ -76,6 +76,7 @@ const vi = {
     receiverName: 'Tên người nhận',
     senderName: 'Tên người gửi',
     language: 'Ngôn ngữ',
+    enableHeartJourney: 'Chơi game sau khi CÓ',
     save: 'Lưu',
     close: 'Đóng',
   },

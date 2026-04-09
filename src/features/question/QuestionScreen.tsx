@@ -72,9 +72,13 @@ export default function QuestionScreen() {
 
   const handleYes = useCallback(() => {
     playSfx('pop')
-    resetJourney()
-    setScreen('heart-journey')
-  }, [setScreen, resetJourney])
+    if (config.enableHeartJourney) {
+      resetJourney()
+      setScreen('heart-journey')
+    } else {
+      setScreen('celebration')
+    }
+  }, [setScreen, resetJourney, config.enableHeartJourney])
 
   return (
     <motion.div

@@ -28,6 +28,7 @@ const defaultConfig: UserConfig = {
   themeColor: '#e11d48',
   language: 'vi',
   autoPlayMusic: false,
+  enableHeartJourney: true,
 }
 
 const defaultSession: SessionState = {
